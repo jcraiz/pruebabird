@@ -1,0 +1,521 @@
+<html>
+<head>
+  <base href="https://campus.speakcollege.org/">
+  <title>Grammar Bird Challenge</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;800&display=swap');
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+      background-color: #87CEEB;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    #container {
+      display: flex;
+      flex-grow: 1;
+      flex-direction: row;
+      flex-wrap: wrap;
+    }
+    #left-panel, #right-panel {
+      width: 100%;
+      max-width: 300px;
+      background-color: #4682B4;
+      color: white;
+      padding: 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    #left-panel {
+      background-color: #4682B4;
+    }
+    #right-panel {
+      background-color: #B0E0E6;
+      margin-left: 10px;
+      border-radius: 10px;
+    }
+    #logo {
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+    #game-title {
+      font-size: 20px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    h2 {
+      font-weight: 800;
+      font-size: 18px;
+    }
+    #game-area {
+      flex-grow: 1;
+      display: flex;
+      padding: 10px;
+      flex-direction: column;
+    }
+    #game-container {
+      flex-grow: 1;
+      background-color: #B0E0E6;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    #sky {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(to bottom, #87CEEB, #E0F6FF);
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+    }
+    #bird, #plane, .cloud {
+      position: absolute;
+      transition: all 0.5s ease;
+    }
+    #bird {
+      width: 100px; /* Increased size */
+      height: 100px; /* Increased size */
+      background: url('https://i.gifer.com/ZHug.gif') no-repeat;
+      background-size: contain;
+      left: 50px;
+      top: 100px;
+      z-index: 10;
+    }
+    #plane {
+      width: 100px;
+      height: 100px;
+      background: url('https://1.bp.blogspot.com/-4DujX1LKgE4/XqnpjEhK2DI/AAAAAAAAfGQ/fjmcKrPPVnkvM3u56Hl3-yUtJGixllspACLcBGAsYHQ/s1600/source.gif') no-repeat;
+      background-size: contain;
+      right: -150px;
+      top: 100px;
+      transform: scaleX(-1);
+      z-index: 5;
+    }
+    .cloud {
+      width: 100px;
+      height: 60px;
+      background: url('https://cdnjs.cloudflare.com/ajax/libs/twemoji/14.0.2/svg/2601.svg') no-repeat;
+      background-size: contain;
+      z-index: 1;
+      opacity: 0.7;
+    }
+    #explosion {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: url('https://m-files.cdnvideo.ru/lpfile/7/1/e/71ea223794441f8700e117c78def423b.gif') no-repeat;
+      background-size: contain;
+      display: none;
+      z-index: 15;
+    }
+    #question {
+      font-size: 16px;
+      margin-bottom: 10px;
+    }
+    #choices {
+      display: flex;
+      flex-direction: column;
+    }
+    button {
+      background-color: #4682B4;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-bottom: 10px;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 500;
+    }
+    button:hover {
+      background-color: #36648B;
+    }
+    #game-info {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background-color: rgba(255, 255, 255, 0.7);
+      padding: 10px;
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+    }
+    #score, #timer {
+      font-size: 14px;
+      font-weight: 800;
+      margin-right: 10px;
+    }
+    #lives {
+      display: flex;
+    }
+    .heart {
+      color: red;
+      font-size: 24px;
+      margin-left: 5px;
+    }
+    #start-screen, #end-screen {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 20;
+      color: white;
+      text-align: center;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    #start-button, #restart-button {
+      font-size: 20px;
+      padding: 10px 20px;
+      margin-top: 20px;
+    }
+    #instructions {
+      max-width: 600px;
+      margin-bottom: 10px;
+    }
+    #instructions h2 {
+      font-weight: 800;
+      font-size: 20px;
+      margin-bottom: 5px;
+    }
+    #instructions ul {
+      text-align: left;
+      padding-left: 20px;
+    }
+    #feedback {
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+    #result {
+      font-size: 20px;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 768px) {
+      #left-panel, #right-panel {
+        width: 300px;
+      }
+      #game-area {
+        padding: 20px;
+      }
+      #game-container {
+        padding: 20px;
+      }
+      #sky {
+        height: 300px;
+      }
+      #bird {
+        width: 100px;
+        height: 100px;
+      }
+    }
+
+    @media (max-width: 767px) {
+      #left-panel, #right-panel {
+        width: 100%;
+      }
+      #game-area {
+        padding: 10px;
+      }
+      #game-container {
+        padding: 10px;
+      }
+      #sky {
+        height: 200px;
+      }
+      #bird {
+        width: 80px;
+        height: 80px;
+      }
+      button {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+      #start-button, #restart-button {
+        font-size: 16px;
+        padding: 10px 20px;
+      }
+      #feedback {
+        font-size: 20px;
+      }
+      #result {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="container">
+    <div id="left-panel">
+      <img id="logo" src="https://campus.speakcollege.org/pluginfile.php/1/core_admin/logocompact/300x300/1720643199/1.png" alt="Speak College logo">
+      <h1 id="game-title">Grammar Bird Challenge</h1>
+      <h2>How to Play</h2>
+      <p>Help the bird keep flying by answering questions about the verb "to be" in present simple tense.</p>
+      <ul>
+        <li>Answer multiple-choice questions.</li>
+        <li>Choose the correct conjugation of "to be".</li>
+        <li>Correct answers keep the bird flying.</li>
+        <li>Incorrect answers result in the bird being hit.</li>
+        <li>You have 3 lives and 60 seconds.</li>
+        <li>Win by answering at least 70% correctly!</li>
+      </ul>
+    </div>
+
+    <div id="game-area">
+      <div id="game-container">
+        <div id="sky">
+          <div id="bird"></div>
+          <div id="plane"></div>
+          <div id="explosion"></div>
+        </div>
+        <div id="game-info">
+          <div id="score">Score: 0</div>
+          <div id="timer">Time: 60s</div>
+          <div id="lives">
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+            <span class="heart">❤️</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="right-panel">
+      <div id="question"></div>
+      <div id="choices"></div>
+    </div>
+  </div>
+
+  <div id="start-screen">
+    <div id="instructions">
+      <h2>How to Play</h2>
+      <ul>
+        <li>Answer questions about the verb "to be" in present simple tense.</li>
+        <li>Choose the correct conjugation from multiple-choice options.</li>
+        <li>Correct answers keep the bird flying.</li>
+        <li>Incorrect answers result in the bird being hit by a plane.</li>
+        <li>You have 3 lives and 60 seconds to play.</li>
+        <li>Win by answering at least 70% of the questions correctly!</li>
+      </ul>
+    </div>
+    <button id="start-button">Start Game</button>
+  </div>
+
+  <div id="end-screen" style="display: none;">
+    <div id="feedback"></div>
+    <div id="result"></div>
+    <button id="restart-button">Play Again</button>
+  </div>
+
+  <audio id="correct-sound" src="https://free-sound-effects.net/mp3/03/free-sound-1674748810.mp3"></audio>
+  <audio id="wrong-sound" src="https://free-sound-effects.net/mp3/03/free-sound-1674747480.mp3"></audio>
+  <audio id="win-sound" src="https://free-sound-effects.net/mp3/03/free-sound-1674706449.mp3"></audio>
+  <audio id="lose-sound" src="https://free-sound-effects.net/mp3/03/free-sound-1674757852.mp3"></audio>
+
+  <script>
+    const questions = [
+      { q: "__ you happy?", a: ["Are", "Is", "Am"], correct: 0 },
+      { q: "She __ not a teacher.", a: ["are", "is", "am"], correct: 1 },
+      { q: "I __ a student.", a: ["are", "is", "am"], correct: 2 },
+      { q: "__ they from Spain?", a: ["Are", "Is", "Am"], correct: 0 },
+      { q: "He __ very tall.", a: ["are", "is", "am"], correct: 1 },
+      { q: "We __ not at home.", a: ["are", "is", "am"], correct: 0 },
+      { q: "__ it raining?", a: ["Are", "Is", "Am"], correct: 1 },
+      { q: "You __ my best friend.", a: ["are", "is", "am"], correct: 0 },
+      { q: "__ I late?", a: ["Are", "Is", "Am"], correct: 2 },
+      { q: "The cat __ on the roof.", a: ["are", "is", "am"], correct: 1 },
+      { q: "They __ not interested.", a: ["are", "is", "am"], correct: 0 },
+      { q: "__ he a doctor?", a: ["Are", "Is", "Am"], correct: 1 },
+      { q: "We __ ready to go.", a: ["are", "is", "am"], correct: 0 },
+      { q: "__ she your sister?", a: ["Are", "Is", "Am"], correct: 1 },
+      { q: "I __ not tired.", a: ["are", "is", "am"], correct: 2 },
+      { q: "The books __ on the table.", a: ["are", "is", "am"], correct: 0 },
+      { q: "__ we late?", a: ["Are", "Is", "Am"], correct: 0 },
+      { q: "It __ very cold today.", a: ["are", "is", "am"], correct: 1 },
+      { q: "__ you sure?", a: ["Are", "Is", "Am"], correct: 0 },
+      { q: "I __ happy to help.", a: ["are", "is", "am"], correct: 2 }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let lives = 3;
+    let timeLeft = 60;
+    let gameInterval;
+    let totalQuestions = 0;
+
+    const sky = document.getElementById('sky');
+    const questionEl = document.getElementById('question');
+    const choicesEl = document.getElementById('choices');
+    const scoreEl = document.getElementById('score');
+    const livesEl = document.getElementById('lives');
+    const timerEl = document.getElementById('timer');
+    const birdEl = document.getElementById('bird');
+    const planeEl = document.getElementById('plane');
+    const explosionEl = document.getElementById('explosion');
+    const startScreen = document.getElementById('start-screen');
+    const endScreen = document.getElementById('end-screen');
+    const feedbackEl = document.getElementById('feedback');
+    const resultEl = document.getElementById('result');
+    const startButton = document.getElementById('start-button');
+    const restartButton = document.getElementById('restart-button');
+    const correctSound = document.getElementById('correct-sound');
+    const wrongSound = document.getElementById('wrong-sound');
+    const winSound = document.getElementById('win-sound');
+    const loseSound = document.getElementById('lose-sound');
+
+    startButton.addEventListener('click', startGame);
+    restartButton.addEventListener('click', restartGame);
+
+    function startGame() {
+      startScreen.style.display = 'none';
+      displayQuestion();
+      updateTimer();
+      gameInterval = setInterval(createCloud, 3000);
+    }
+
+    function restartGame() {
+      endScreen.style.display = 'none';
+      score = 0;
+      lives = 3;
+      timeLeft = 60;
+      totalQuestions = 0;
+      updateLives();
+      scoreEl.textContent = `Score: ${score}`;
+      timerEl.textContent = `Time: ${timeLeft}s`;
+      birdEl.style.display = 'block';
+      startGame();
+    }
+
+    function createCloud() {
+      const cloud = document.createElement('div');
+      cloud.className = 'cloud';
+      cloud.style.top = `${Math.random() * 250}px`;
+      cloud.style.right = '-100px';
+      sky.appendChild(cloud);
+
+      function moveCloud() {
+        cloud.style.right = `${parseFloat(cloud.style.right) + 1}px`;
+        if (parseFloat(cloud.style.right) > sky.offsetWidth) {
+          sky.removeChild(cloud);
+        } else {
+          requestAnimationFrame(moveCloud);
+        }
+      }
+
+      moveCloud();
+    }
+
+    function displayQuestion() {
+      if (lives <= 0 || timeLeft <= 0) {
+        endGame();
+        return;
+      }
+
+      const q = questions[Math.floor(Math.random() * questions.length)];
+      questionEl.textContent = q.q;
+      choicesEl.innerHTML = '';
+
+      q.a.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.textContent = answer;
+        button.onclick = () => checkAnswer(index, q.correct);
+        choicesEl.appendChild(button);
+      });
+
+      animateBird();
+    }
+
+    function animateBird() {
+      birdEl.style.top = `${Math.random() * 250}px`;
+    }
+
+    function checkAnswer(answerIndex, correctIndex) {
+      totalQuestions++;
+      if (answerIndex === correctIndex) {
+        score++;
+        scoreEl.textContent = `Score: ${score}`;
+        correctSound.play();
+        animateBird();
+      } else {
+        lives--;
+        updateLives();
+        hitByPlane();
+        wrongSound.play();
+      }
+
+      setTimeout(displayQuestion, 2000);
+    }
+
+    function updateLives() {
+      livesEl.innerHTML = '❤️'.repeat(lives);
+    }
+
+    function hitByPlane() {
+      birdEl.style.display = 'none';
+      planeEl.style.right = '-150px';
+      planeEl.style.top = `${parseInt(birdEl.style.top) - 25}px`;
+      planeEl.style.transition = 'right 3s linear';
+      setTimeout(() => {
+        planeEl.style.right = '120%';
+        showExplosion();
+        setTimeout(() => {
+          birdEl.style.display = 'block';
+          explosionEl.style.display = 'none';
+        }, 1000);
+      }, 50);
+    }
+
+    function showExplosion() {
+      explosionEl.style.display = 'block';
+      explosionEl.style.left = `${parseInt(birdEl.style.left)}px`;
+      explosionEl.style.top = `${parseInt(birdEl.style.top) - 25}px`;
+    }
+
+    function endGame() {
+      clearInterval(gameInterval);
+      const percentCorrect = (score / totalQuestions) * 100;
+      const win = percentCorrect >= 70;
+
+      feedbackEl.textContent = win ? "Congratulations! You Win!" : "Game Over! You Lose!";
+      resultEl.textContent = `Your final score is ${score} (${percentCorrect.toFixed(2)}% correct).`;
+
+      if (win) {
+        winSound.play();
+      } else {
+        loseSound.play();
+      }
+
+      endScreen.style.display = 'flex';
+    }
+
+    function updateTimer() {
+      timeLeft--;
+      timerEl.textContent = `Time: ${timeLeft}s`;
+      if (timeLeft <= 0) {
+        endGame();
+      } else {
+        setTimeout(updateTimer, 1000);
+      }
+    }
+  </script>
+</body>
+</html>
