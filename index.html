@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grammar Bird Challenge · Verb "To Be"</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg-page: #EEF5FA;
+      --bg-card: #FFFFFF;
+      --bg-subtle: #F4F8FB;
+      --ink: #13293D;
+      --ink-soft: #435A6E;
+      --accent: #1B6B5F;
+      --accent-hover: #145249;
+      --sky-top: #5BB5F7;
+      --sky-mid: #A8DCFF;
+      --sky-bottom: #E8F6FF;
+      --ok-bg: #E6F6F0;
+      --ok-border: #1B6B5F;
+      --err-bg: #FDECEC;
+      --err-border: #C53030;
+      --border: #D6E3EC;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --shadow: 0 10px 30px rgba(19, 41, 61, 0.08);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      background: var(--bg-page);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button:focus-visible {
+      outline: 3px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+
+    /* TOP BAR */
+    .topbar {
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-badge {
+      background: #E6F2FA;
+      color: #165B8A;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.01em;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-subtle);
+      color: var(--ink);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .icon-btn:hover {
+      background: #E4EEF5;
+    }
+
+    /* MAIN LAYOUT */
+    .shell {
+      width: 100%;
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 24px 20px 32px;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    /* SKY STAGE */
+    .stage-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 14px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .hud {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .hud-pill {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 8px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .hud-label {
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-soft);
+    }
+
+    .hud-val {
+      font-size: 1.05rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .hud-val.warn {
+      color: #C53030;
+    }
+
+    .timer-bar-wrap {
+      height: 6px;
+      background: #E2ECF3;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .timer-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #1B6B5F, #2EA893);
+      transition: width 0.35s linear, background-color 0.3s ease;
+    }
+
+    .timer-bar.low {
+      background: #D93838;
+    }
+
+    #sky {
+      width: 100%;
+      height: 320px;
+      background: linear-gradient(180deg, var(--sky-top) 0%, var(--sky-mid) 58%, var(--sky-bottom) 100%);
+      position: relative;
+      overflow: hidden;
+      border-radius: 12px;
+      border: 1px solid rgba(19, 41, 61, 0.08);
+    }
+
+    .hills {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 54px;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ORIGINAL BIRD & ANIMATION */
+    #bird {
+      position: absolute;
+      width: 96px;
+      height: 96px;
+      background: url('https://i.gifer.com/ZHug.gif') no-repeat center / contain;
+      left: 48px;
+      top: 110px;
+      z-index: 10;
+      transition: top 0.28s ease, transform 0.25s ease, opacity 0.25s ease;
+    }
+
+    #bird.happy {
+      transform: translateY(-6px) scale(1.06);
+    }
+
+    #bird.falling {
+      transition: top 0.72s cubic-bezier(0.55, 0.05, 0.75, 0.35), transform 0.65s ease, opacity 0.35s ease;
+      transform: rotate(42deg) scale(0.92);
+    }
+
+    /* ORIGINAL PLANE ORIENTED NOSE-FIRST (RIGHT-TO-LEFT, NO scaleX(-1)) */
+    #plane {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      background: url('https://1.bp.blogspot.com/-4DujX1LKgE4/XqnpjEhK2DI/AAAAAAAAfGQ/fjmcKrPPVnkvM3u56Hl3-yUtJGixllspACLcBGAsYHQ/s1600/source.gif') no-repeat center / contain;
+      right: -140px;
+      top: 100px;
+      transform: scaleX(1);
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .cloud {
+      position: absolute;
+      width: 96px;
+      height: 54px;
+      z-index: 1;
+      opacity: 0.78;
+      pointer-events: none;
+    }
+
+    #explosion {
+      position: absolute;
+      width: 96px;
+      height: 96px;
+      display: none;
+      z-index: 15;
+      pointer-events: none;
+    }
+
+    #explosion.boom {
+      display: block;
+      animation: popBoom 0.7s ease-out forwards;
+    }
+
+    @keyframes popBoom {
+      0% {
+        transform: scale(0.4);
+        opacity: 1;
+      }
+
+      60% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1.35);
+        opacity: 0;
+      }
+    }
+
+    /* QUESTION PANEL */
+    .quiz-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .q-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+    }
+
+    .q-topic {
+      background: var(--bg-subtle);
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+
+    #question {
+      font-size: 1.45rem;
+      font-weight: 800;
+      line-height: 1.35;
+      min-height: 2.2em;
+      color: var(--ink);
+    }
+
+    .blank-pill {
+      display: inline-block;
+      min-width: 56px;
+      padding: 0 10px;
+      border-bottom: 3px solid var(--accent);
+      color: var(--accent);
+      text-align: center;
+    }
+
+    #choices {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .choice-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 14px 16px;
+      background: var(--bg-subtle);
+      color: var(--ink);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      font: inherit;
+      font-size: 1.02rem;
+      font-weight: 700;
+      cursor: pointer;
+      text-align: left;
+      transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #E9F4F2;
+    }
+
+    .choice-btn:active:not(:disabled) {
+      transform: translateY(1px);
+    }
+
+    .choice-btn:disabled {
+      cursor: default;
+    }
+
+    .choice-btn.correct {
+      background: var(--ok-bg);
+      border-color: var(--ok-border);
+      color: #0F473E;
+    }
+
+    .choice-btn.wrong {
+      background: var(--err-bg);
+      border-color: var(--err-border);
+      color: #8A1C1C;
+    }
+
+    .key-hint {
+      font-size: 0.76rem;
+      font-weight: 700;
+      color: var(--ink-soft);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+
+    .feedback-banner {
+      min-height: 24px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .feedback-banner.ok {
+      color: var(--ok-border);
+    }
+
+    .feedback-banner.err {
+      color: var(--err-border);
+    }
+
+    /* OVERLAYS (START / END) */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(19, 41, 61, 0.72);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 50;
+    }
+
+    .overlay.hidden {
+      display: none;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      color: var(--ink);
+      border-radius: var(--radius-lg);
+      max-width: 500px;
+      width: 100%;
+      padding: 28px 30px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    }
+
+    .modal-card h2 {
+      margin: 0 0 10px;
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .modal-card p {
+      margin: 0 0 14px;
+      color: var(--ink-soft);
+      line-height: 1.55;
+    }
+
+    .rules-list {
+      margin: 0 0 22px;
+      padding-left: 20px;
+      color: var(--ink-soft);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 0.94rem;
+    }
+
+    .primary-btn {
+      width: 100%;
+      padding: 14px 20px;
+      background: var(--accent);
+      color: #FFFFFF;
+      border: none;
+      border-radius: var(--radius-md);
+      font: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .primary-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .result-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin: 16px 0 22px;
+    }
+
+    .res-box {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      text-align: center;
+    }
+
+    .res-box b {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .res-box span {
+      font-size: 0.78rem;
+      color: var(--ink-soft);
+    }
+
+    @media (max-width: 860px) {
+      .shell {
+        grid-template-columns: 1fr;
+        padding: 14px;
+        gap: 16px;
+      }
+
+      #sky {
+        height: 220px;
+      }
+
+      #bird {
+        width: 78px;
+        height: 78px;
+        left: 28px;
+        top: 70px;
+      }
+
+      #plane {
+        width: 82px;
+        height: 82px;
+      }
+
+      .hud {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .brand-badge {
+        display: none;
+      }
+
+      .topbar {
+        padding: 10px 14px;
+      }
+
+      #question {
+        font-size: 1.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="topbar">
+    <div class="brand-group">
+      <span class="brand-badge">Speak · A1</span>
+      <h1>Grammar Bird Challenge</h1>
+    </div>
+    <div class="top-actions">
+      <button type="button" class="icon-btn" id="soundBtn" aria-pressed="true">🔊 Sound On</button>
+      <button type="button" class="icon-btn" id="rulesBtn">? Rules</button>
+    </div>
+  </header>
+
+  <main class="shell">
+    <section class="stage-card" aria-label="Game stage">
+      <div class="hud">
+        <div class="hud-pill">
+          <span class="hud-label">Score</span>
+          <span class="hud-val" id="scoreVal">0</span>
+        </div>
+        <div class="hud-pill">
+          <span class="hud-label">Streak</span>
+          <span class="hud-val" id="streakVal">0</span>
+        </div>
+        <div class="hud-pill">
+          <span class="hud-label">Time</span>
+          <span class="hud-val" id="timerVal">60s</span>
+        </div>
+        <div class="hud-pill">
+          <span class="hud-label">Lives</span>
+          <span class="hud-val" id="livesVal" aria-label="3 lives remaining">❤️❤️❤️</span>
+        </div>
+      </div>
+
+      <div class="timer-bar-wrap" aria-hidden="true">
+        <div class="timer-bar" id="timerBar"></div>
+      </div>
+
+      <div id="sky">
+        <div id="bird" aria-hidden="true"></div>
+        <div id="plane" aria-hidden="true"></div>
+        <div id="explosion" aria-hidden="true">
+          <svg viewBox="0 0 96 96" width="96" height="96" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M48 6l9 22 23-10-10 23 22 9-22 9 10 23-23-10-9 22-9-22-23 10 10-23-22-9 22-9L16 18l23 10L48 6z"
+              fill="#FF9800" />
+            <circle cx="48" cy="48" r="18" fill="#FFE066" />
+          </svg>
+        </div>
+        <svg class="hills" viewBox="0 0 800 60" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0 60V32c110-28 210-26 340 4 120 26 260-24 460-6v30H0z" fill="#63B47A" opacity="0.45" />
+          <path d="M0 60V42c150-18 280 12 420-8 140-20 260 6 380-4v30H0z" fill="#469960" opacity="0.65" />
+        </svg>
+      </div>
+    </section>
+
+    <section class="quiz-card" aria-label="Grammar question">
+      <div class="q-meta">
+        <span id="qCounter">Question 1 / 20</span>
+        <span class="q-topic">Verb "to be" · Present Simple</span>
+      </div>
+      <div id="question" aria-live="polite"></div>
+      <div id="choices" role="group" aria-label="Answer choices"></div>
+      <div class="feedback-banner" id="feedbackBanner" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <div class="overlay" id="startOverlay" role="dialog" aria-modal="true" aria-labelledby="startTitle">
+    <div class="modal-card">
+      <h2 id="startTitle">Grammar Bird Challenge</h2>
+      <p>Keep the bird flying safely by choosing the right conjugation of the verb <strong>"to be"</strong> in present
+        simple.</p>
+      <ul class="rules-list">
+        <li>Read the sentence and pick <strong>am</strong>, <strong>is</strong>, or <strong>are</strong> (or press keys
+          <strong>1, 2, 3</strong>).</li>
+        <li>Fly the bird up and down anytime with the <strong>↑ / ↓</strong> arrow keys.</li>
+        <li>Wrong answers send a plane right at your bird, making it fall and costing 1 life.</li>
+        <li>You have <strong>3 lives</strong> and <strong>60 seconds</strong>. Score at least <strong>70%</strong>
+          accuracy to win!</li>
+      </ul>
+      <button type="button" class="primary-btn" id="startBtn">Start Game</button>
+    </div>
+  </div>
+
+  <div class="overlay hidden" id="endOverlay" role="dialog" aria-modal="true" aria-labelledby="endTitle">
+    <div class="modal-card">
+      <h2 id="endTitle">Game Over!</h2>
+      <p id="endSubtitle"></p>
+      <div class="result-stats">
+        <div class="res-box"><b id="resScore">0</b><span>Correct</span></div>
+        <div class="res-box"><b id="resAcc">0%</b><span>Accuracy</span></div>
+        <div class="res-box"><b id="resBest">0</b><span>Best Score</span></div>
+      </div>
+      <button type="button" class="primary-btn" id="restartBtn">Play Again</button>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      const BANK = [
+        { q: "__ you happy?", a: ["Are", "Is", "Am"], correct: 0 },
+        { q: "She __ not a teacher.", a: ["are", "is", "am"], correct: 1 },
+        { q: "I __ a student.", a: ["are", "is", "am"], correct: 2 },
+        { q: "__ they from Spain?", a: ["Are", "Is", "Am"], correct: 0 },
+        { q: "He __ very tall.", a: ["are", "is", "am"], correct: 1 },
+        { q: "We __ not at home.", a: ["are", "is", "am"], correct: 0 },
+        { q: "__ it raining?", a: ["Are", "Is", "Am"], correct: 1 },
+        { q: "You __ my best friend.", a: ["are", "is", "am"], correct: 0 },
+        { q: "__ I late?", a: ["Are", "Is", "Am"], correct: 2 },
+        { q: "The cat __ on the roof.", a: ["are", "is", "am"], correct: 1 },
+        { q: "They __ not interested.", a: ["are", "is", "am"], correct: 0 },
+        { q: "__ he a doctor?", a: ["Are", "Is", "Am"], correct: 1 },
+        { q: "We __ ready to go.", a: ["are", "is", "am"], correct: 0 },
+        { q: "__ she your sister?", a: ["Are", "Is", "Am"], correct: 1 },
+        { q: "I __ not tired.", a: ["are", "is", "am"], correct: 2 },
+        { q: "The books __ on the table.", a: ["are", "is", "am"], correct: 0 },
+        { q: "__ we late?", a: ["Are", "Is", "Am"], correct: 0 },
+        { q: "It __ very cold today.", a: ["are", "is", "am"], correct: 1 },
+        { q: "__ you sure?", a: ["Are", "Is", "Am"], correct: 0 },
+        { q: "I __ happy to help.", a: ["are", "is", "am"], correct: 2 }
+      ];
+
+      let deck = [];
+      let qIndex = 0;
+      let score = 0;
+      let streak = 0;
+      let lives = 3;
+      let timeLeft = 60;
+      let totalAnswered = 0;
+      let isAnswering = false;
+      let isRunning = false;
+      let soundOn = true;
+      let timerId = null;
+      let cloudId = null;
+      let nextTimeoutId = null;
+      let audioCtx = null;
+
+      const sky = document.getElementById('sky');
+      const birdEl = document.getElementById('bird');
+      const planeEl = document.getElementById('plane');
+      const explosionEl = document.getElementById('explosion');
+      const questionEl = document.getElementById('question');
+      const choicesEl = document.getElementById('choices');
+      const qCounterEl = document.getElementById('qCounter');
+      const feedbackBanner = document.getElementById('feedbackBanner');
+
+      const scoreVal = document.getElementById('scoreVal');
+      const streakVal = document.getElementById('streakVal');
+      const timerVal = document.getElementById('timerVal');
+      const timerBar = document.getElementById('timerBar');
+      const livesVal = document.getElementById('livesVal');
+
+      const startOverlay = document.getElementById('startOverlay');
+      const endOverlay = document.getElementById('endOverlay');
+      const startBtn = document.getElementById('startBtn');
+      const restartBtn = document.getElementById('restartBtn');
+      const soundBtn = document.getElementById('soundBtn');
+      const rulesBtn = document.getElementById('rulesBtn');
+
+      function playTone(type) {
+        if (!soundOn) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+
+          if (type === 'ok') {
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(523.25, now);
+            osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.14);
+            gain.gain.setValueAtTime(0.14, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+            osc.start(now);
+            osc.stop(now + 0.22);
+          } else if (type === 'err') {
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(220, now);
+            osc.frequency.exponentialRampToValueAtTime(110, now + 0.25);
+            gain.gain.setValueAtTime(0.12, now);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+            osc.start(now);
+            osc.stop(now + 0.28);
+          } else if (type === 'win') {
+            [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+              const o = audioCtx.createOscillator();
+              const g = audioCtx.createGain();
+              o.type = 'triangle';
+              o.connect(g); g.connect(audioCtx.destination);
+              o.frequency.setValueAtTime(freq, now + i * 0.09);
+              g.gain.setValueAtTime(0.12, now + i * 0.09);
+              g.gain.exponentialRampToValueAtTime(0.001, now + i * 0.09 + 0.25);
+              o.start(now + i * 0.09);
+              o.stop(now + i * 0.09 + 0.25);
+            });
+          }
+        } catch (e) { }
+      }
+
+      function playPropellerSound(durationSec = 2.4) {
+        if (!soundOn) return;
+        try {
+          if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+          const now = audioCtx.currentTime;
+
+          // Engine rumble (vintage turboprop / piston chug)
+          const engine = audioCtx.createOscillator();
+          engine.type = 'sawtooth';
+          engine.frequency.setValueAtTime(64, now);
+          engine.frequency.linearRampToValueAtTime(52, now + durationSec);
+
+          // Lowpass filter for warm muffled prop tone
+          const lp = audioCtx.createBiquadFilter();
+          lp.type = 'lowpass';
+          lp.frequency.setValueAtTime(220, now);
+          lp.frequency.linearRampToValueAtTime(340, now + durationSec * 0.45);
+          lp.frequency.linearRampToValueAtTime(170, now + durationSec);
+
+          // Blade chop LFO modulating engine gain
+          const lfo = audioCtx.createOscillator();
+          lfo.type = 'sine';
+          lfo.frequency.setValueAtTime(16, now);
+          const lfoGain = audioCtx.createGain();
+          lfoGain.gain.setValueAtTime(0.07, now);
+
+          const masterGain = audioCtx.createGain();
+          masterGain.gain.setValueAtTime(0.001, now);
+          masterGain.gain.exponentialRampToValueAtTime(0.16, now + durationSec * 0.42);
+          masterGain.gain.exponentialRampToValueAtTime(0.001, now + durationSec);
+
+          lfo.connect(lfoGain);
+          lfoGain.connect(masterGain.gain);
+          engine.connect(lp);
+          lp.connect(masterGain);
+          masterGain.connect(audioCtx.destination);
+
+          engine.start(now);
+          lfo.start(now);
+          engine.stop(now + durationSec);
+          lfo.stop(now + durationSec);
+        } catch (e) { }
+      }
+
+      function shuffle(arr) {
+        const copy = arr.slice();
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      function spawnCloud() {
+        const cloud = document.createElement('div');
+        cloud.className = 'cloud';
+        cloud.innerHTML = '<svg viewBox="0 0 96 54" width="96" height="54" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M24 44h50a14 14 0 0 0 2-27.8A18 18 0 0 0 41 12a15 15 0 0 0-17 14A10 10 0 0 0 24 44z" fill="#FFFFFF"/></svg>';
+        const maxTop = Math.max(20, sky.clientHeight - 100);
+        cloud.style.top = Math.round(12 + Math.random() * maxTop) + 'px';
+        let rightPos = -100;
+        cloud.style.right = rightPos + 'px';
+        sky.appendChild(cloud);
+
+        function drift() {
+          if (!cloud.parentNode) return;
+          rightPos += 0.9;
+          cloud.style.right = rightPos + 'px';
+          if (rightPos > sky.clientWidth + 110) {
+            cloud.remove();
+          } else {
+            requestAnimationFrame(drift);
+          }
+        }
+        requestAnimationFrame(drift);
+      }
+
+      function animateBird() {
+        const maxTop = Math.max(20, sky.clientHeight - birdEl.offsetHeight - 28);
+        const nextTop = Math.round(16 + Math.random() * maxTop);
+        birdEl.style.top = nextTop + 'px';
+      }
+
+      function hitByPlane() {
+        const birdTop = birdEl.offsetTop;
+        const birdLeft = birdEl.offsetLeft;
+        const groundTop = Math.max(20, sky.clientHeight - birdEl.offsetHeight + 8);
+
+        playPropellerSound(2.4);
+
+        planeEl.style.transition = 'none';
+        planeEl.style.right = '-140px';
+        planeEl.style.top = Math.max(4, birdTop - 4) + 'px';
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            planeEl.style.transition = 'right 2.4s linear';
+            planeEl.style.right = (sky.clientWidth + 160) + 'px';
+          });
+        });
+
+        setTimeout(() => {
+          explosionEl.style.left = birdLeft + 'px';
+          explosionEl.style.top = birdTop + 'px';
+          explosionEl.classList.remove('boom');
+          void explosionEl.offsetWidth;
+          explosionEl.classList.add('boom');
+
+          birdEl.classList.add('falling');
+          birdEl.style.top = groundTop + 'px';
+        }, 1050);
+
+        setTimeout(() => {
+          explosionEl.classList.remove('boom');
+          if (lives > 0) {
+            birdEl.classList.remove('falling');
+          }
+        }, 2250);
+      }
+
+      function updateHud() {
+        scoreVal.textContent = String(score);
+        streakVal.textContent = streak > 0 ? '🔥 ' + streak : '0';
+        timerVal.textContent = timeLeft + 's';
+        timerVal.classList.toggle('warn', timeLeft <= 10);
+        timerBar.style.width = Math.max(0, (timeLeft / 60) * 100) + '%';
+        timerBar.classList.toggle('low', timeLeft <= 10);
+        livesVal.textContent = lives > 0 ? '❤️'.repeat(lives) : '💔';
+        livesVal.setAttribute('aria-label', lives + ' lives remaining');
+      }
+
+      function renderQuestion() {
+        if (!isRunning || lives <= 0 || timeLeft <= 0) {
+          endGame();
+          return;
+        }
+        if (qIndex >= deck.length) {
+          deck = shuffle(BANK);
+          qIndex = 0;
+        }
+        isAnswering = false;
+        feedbackBanner.textContent = '';
+        feedbackBanner.className = 'feedback-banner';
+
+        const q = deck[qIndex];
+        qCounterEl.textContent = `Question ${totalAnswered + 1} / ${BANK.length}`;
+        questionEl.innerHTML = q.q.replace('__', '<span class="blank-pill">___</span>');
+        choicesEl.innerHTML = '';
+
+        q.a.forEach((opt, idx) => {
+          const btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'choice-btn';
+          btn.innerHTML = `<span>${opt}</span><span class="key-hint">${idx + 1}</span>`;
+          btn.addEventListener('click', () => handleAnswer(idx));
+          choicesEl.appendChild(btn);
+        });
+
+        animateBird();
+      }
+
+      function handleAnswer(idx) {
+        if (!isRunning || isAnswering) return;
+        isAnswering = true;
+
+        const q = deck[qIndex];
+        const buttons = choicesEl.querySelectorAll('.choice-btn');
+        buttons.forEach(b => { b.disabled = true; });
+        totalAnswered++;
+
+        const isCorrect = idx === q.correct;
+        if (isCorrect) {
+          score++;
+          streak++;
+          buttons[idx].classList.add('correct');
+          feedbackBanner.textContent = 'Great! Keep flying!';
+          feedbackBanner.className = 'feedback-banner ok';
+          birdEl.classList.add('happy');
+          setTimeout(() => birdEl.classList.remove('happy'), 400);
+          playTone('ok');
+        } else {
+          streak = 0;
+          lives--;
+          buttons[idx].classList.add('wrong');
+          buttons[q.correct].classList.add('correct');
+          feedbackBanner.textContent = `Oops! The correct form is "${q.a[q.correct]}".`;
+          feedbackBanner.className = 'feedback-banner err';
+          hitByPlane();
+          playTone('err');
+        }
+
+        const blank = questionEl.querySelector('.blank-pill');
+        if (blank) blank.textContent = q.a[q.correct];
+
+        qIndex++;
+        updateHud();
+
+        nextTimeoutId = setTimeout(() => {
+          if (lives <= 0 || timeLeft <= 0) endGame();
+          else renderQuestion();
+        }, isCorrect ? 950 : 2550);
+      }
+
+      function startGame() {
+        clearInterval(timerId);
+        clearInterval(cloudId);
+        clearTimeout(nextTimeoutId);
+
+        deck = shuffle(BANK);
+        qIndex = 0;
+        score = 0;
+        streak = 0;
+        lives = 3;
+        timeLeft = 60;
+        totalAnswered = 0;
+        isRunning = true;
+        isAnswering = false;
+
+        birdEl.style.opacity = '1';
+        birdEl.classList.remove('falling');
+        startOverlay.classList.add('hidden');
+        endOverlay.classList.add('hidden');
+
+        updateHud();
+        renderQuestion();
+        spawnCloud();
+
+        cloudId = setInterval(spawnCloud, 2800);
+        timerId = setInterval(() => {
+          timeLeft--;
+          updateHud();
+          if (timeLeft <= 0) {
+            endGame();
+          }
+        }, 1000);
+      }
+
+      function endGame() {
+        if (!isRunning) return;
+        isRunning = false;
+        clearInterval(timerId);
+        clearInterval(cloudId);
+        clearTimeout(nextTimeoutId);
+
+        const pct = totalAnswered > 0 ? Math.round((score / totalAnswered) * 100) : 0;
+        const win = totalAnswered > 0 && pct >= 70 && lives > 0;
+
+        let best = 0;
+        try {
+          best = Math.max(score, parseInt(localStorage.getItem('gb_best') || '0', 10));
+          localStorage.setItem('gb_best', String(best));
+        } catch (e) { best = score; }
+
+        document.getElementById('endTitle').textContent = win ? 'Congratulations! You Win!' : 'Game Over!';
+        document.getElementById('endSubtitle').textContent = win
+          ? 'Your bird soared across the sky with strong "to be" accuracy.'
+          : 'You need at least 70% accuracy and remaining lives to win. Try again!';
+        document.getElementById('resScore').textContent = String(score);
+        document.getElementById('resAcc').textContent = pct + '%';
+        document.getElementById('resBest').textContent = String(best);
+
+        if (win) playTone('win');
+        endOverlay.classList.remove('hidden');
+      }
+
+      startBtn.addEventListener('click', startGame);
+      restartBtn.addEventListener('click', startGame);
+
+      soundBtn.addEventListener('click', () => {
+        soundOn = !soundOn;
+        soundBtn.setAttribute('aria-pressed', String(soundOn));
+        soundBtn.textContent = soundOn ? '🔊 Sound On' : '🔇 Muted';
+      });
+
+      rulesBtn.addEventListener('click', () => {
+        if (isRunning) {
+          clearInterval(timerId);
+          clearInterval(cloudId);
+          isRunning = false;
+        }
+        startOverlay.classList.remove('hidden');
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (!isRunning) return;
+
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+          e.preventDefault();
+          if (birdEl.classList.contains('falling')) return;
+          const step = 28;
+          const minTop = 10;
+          const maxTop = Math.max(minTop, sky.clientHeight - birdEl.offsetHeight - 16);
+          const curTop = birdEl.offsetTop;
+          const nextTop = e.key === 'ArrowUp'
+            ? Math.max(minTop, curTop - step)
+            : Math.min(maxTop, curTop + step);
+          birdEl.style.top = nextTop + 'px';
+          return;
+        }
+
+        if (isAnswering) return;
+        if (e.key === '1' || e.key === '2' || e.key === '3') {
+          const idx = parseInt(e.key, 10) - 1;
+          const btns = choicesEl.querySelectorAll('.choice-btn');
+          if (btns[idx]) btns[idx].click();
+        }
+      });
+    })();
+  </script>
+</body>
+
+</html>
